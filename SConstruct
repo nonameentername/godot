@@ -306,6 +306,7 @@ if env["import_env_vars"]:
 
 if env["library_type"] == "static_library":
     env.Append(CPPDEFINES=["LIBGODOT_ENABLED"])
+    env.Append(CCFLAGS=["-fPIC"])
 elif env["library_type"] == "shared_library":
     env.Append(CPPDEFINES=["LIBGODOT_ENABLED"])
     env.Append(CCFLAGS=["-fPIC"])
