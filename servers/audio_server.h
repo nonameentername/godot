@@ -41,6 +41,7 @@
 
 #include <atomic>
 
+class AudioDriverDistrho;
 class AudioDriverDummy;
 class AudioSample;
 class AudioStream;
@@ -167,6 +168,7 @@ class AudioDriverManager {
 	static AudioDriver *drivers[MAX_DRIVERS];
 	static int driver_count;
 
+	static AudioDriverDistrho distrho_driver;
 	static AudioDriverDummy dummy_driver;
 
 public:
@@ -361,6 +363,7 @@ public:
 		ERR_FAIL_V(1);
 	}
 
+    void process_external(int p_frames);
 	// Do not use from outside audio thread.
 	bool thread_has_channel_mix_buffer(int p_bus, int p_buffer) const;
 	AudioFrame *thread_get_channel_mix_buffer(int p_bus, int p_buffer);

@@ -39,6 +39,7 @@
 #include "core/string/string_name.h"
 #include "core/templates/pair.h"
 #include "scene/scene_string_names.h"
+#include "servers/audio/audio_driver_distrho.h"
 #include "servers/audio/audio_driver_dummy.h"
 #include "servers/audio/audio_stream.h"
 #include "servers/audio/effects/audio_effect_compressor.h"
@@ -200,11 +201,13 @@ void AudioDriver::start_sample_playback(const Ref<AudioSamplePlayback> &p_playba
 	}
 }
 
+AudioDriverDistrho AudioDriverManager::distrho_driver;
 AudioDriverDummy AudioDriverManager::dummy_driver;
 AudioDriver *AudioDriverManager::drivers[MAX_DRIVERS] = {
+	&AudioDriverManager::distrho_driver,
 	&AudioDriverManager::dummy_driver,
 };
-int AudioDriverManager::driver_count = 1;
+int AudioDriverManager::driver_count = 2;
 
 void AudioDriverManager::add_driver(AudioDriver *p_driver) {
 	ERR_FAIL_COND(driver_count >= MAX_DRIVERS);
@@ -1672,6 +1675,11 @@ double AudioServer::get_time_to_next_mix() const {
 	return AudioDriver::get_singleton()->get_time_to_next_mix();
 }
 
+void AudioServer::process_external(int p_frames) {
+    AudioDriverDistrho *distrho_driver = (AudioDriverDistrho *)AudioDriver::get_singleton();
+    distrho_driver->process_external(p_frames);
+}
+
 double AudioServer::get_time_since_last_mix() const {
 	return AudioDriver::get_singleton()->get_time_since_last_mix();
 }
@@ -1938,6 +1946,8 @@ void AudioServer::update_sample_playback_pitch_scale(const Ref<AudioSamplePlayba
 }
 
 void AudioServer::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("process_external", "frames"), &AudioServer::process_external);
+
 	ClassDB::bind_method(D_METHOD("set_bus_count", "amount"), &AudioServer::set_bus_count);
 	ClassDB::bind_method(D_METHOD("get_bus_count"), &AudioServer::get_bus_count);
 
