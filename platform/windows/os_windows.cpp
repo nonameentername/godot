@@ -55,6 +55,15 @@
 #include <avrt.h>
 #include <bcrypt.h>
 #include <direct.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <hidsdi.h>
+#ifdef __cplusplus
+}
+#endif
+
 #include <knownfolders.h>
 #include <process.h>
 #include <psapi.h>
@@ -2859,7 +2868,8 @@ LPVOID install_iat_hook(const String &p_target, const String &p_module, const St
 						LPVOID old_func = (LPVOID)first_thunk->u1.Function;
 						first_thunk->u1.Function = (DWORD_PTR)p_hook_func;
 
-						VirtualProtect((LPVOID)(&first_thunk->u1.Function), 8, old_protect, nullptr);
+                        DWORD dummy = 0;
+						VirtualProtect((LPVOID)(&first_thunk->u1.Function), 8, old_protect, &dummy);
 						return old_func;
 					}
 					original_first_thunk++;

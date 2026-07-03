@@ -30,7 +30,12 @@
 
 #pragma once
 
+//TODO: fix when compiling with both gdextension and libgodot duplicate definitions
+#if defined(USE_GDEXTENSION)
+#include "gdextension_interface.h"
+#else
 #include "core/extension/gdextension_interface.gen.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
