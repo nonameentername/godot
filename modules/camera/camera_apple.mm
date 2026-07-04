@@ -385,7 +385,7 @@ bool CameraFeedApple::activate_feed() {
 	}
 
 	// Start camera capture, check permission.
-	if (@available(macOS 10.14, iOS 14.0, visionOS 1.0, *)) {
+	if (@available(macOS 10.14, iOS 14.0, *)) {
 		AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
 		if (status == AVAuthorizationStatusAuthorized) {
 			capture_session = [[MyCaptureSession alloc] initForFeed:this andDevice:device];
@@ -469,7 +469,7 @@ void CameraApple::update_feeds() {
 #ifdef APPLE_EMBEDDED_ENABLED
 	{
 		NSMutableArray *deviceTypes = [NSMutableArray array];
-		if (@available(iOS 14.0, visionOS 2.1, *)) {
+		if (@available(iOS 14.0, *)) {
 			[deviceTypes addObject:AVCaptureDeviceTypeBuiltInWideAngleCamera];
 		}
 #ifdef IOS_ENABLED
